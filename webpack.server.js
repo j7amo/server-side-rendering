@@ -1,17 +1,24 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.base');
+const webpackNodeExternals = require('webpack-node-externals');
 
 const config = {
-  // inform Webpack that we are building a bundle for Node.js and not for the browser
+  // Tell Webpack that we are building a bundle for Node.js and not for the browser
   target: 'node',
-  // tell Webpack the root file of our server app
+  // Tell Webpack the root file of our server app
   entry: './src/index.js',
-  // tell Webpack where to put the generated output file
+  // Tell Webpack where to put the generated output file
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
   },
+  // This configuration that use 'webpack-node-externals' package lets Webpack SKIP adding
+  // dependencies which are present in 'node_modules' folder to the resulting bundle to make it
+  // much lighter which in turn should make server boot up faster.
+  // We can do this because Node.js can resolve modules directly from 'node_modules' folder at the runtime,
+  // so it looks like we don't even need those packages included in the bundle at all in the first place!
+  externals: [webpackNodeExternals()],
 };
 
 // The 'merge' utility function from the 'webpack-merge' package lets us merge 2 configs into one:
