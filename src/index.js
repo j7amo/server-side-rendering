@@ -6,11 +6,13 @@ import Home from './client/components/Home';
 const app = express();
 
 app.get('/', (req, res) => {
-  // the problem is: Node environment does not know anything about JSX.
-  // so if we try to execute index.js without additional setup,
+  // The problem is: Node environment does not know anything about JSX.
+  // So if we try to execute index.js without additional setup,
   // we will get: SyntaxError: Unexpected token '<'
   const content = renderToString(<Home />);
 
+  // Here we only send resulting HTML back to the client
+  // NO JS! We need to fix it!
   res.send(content);
 });
 
