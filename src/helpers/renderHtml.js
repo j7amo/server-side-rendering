@@ -2,8 +2,9 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import Routes from '../client/Routes';
+import { Provider } from 'react-redux';
 
-export default (req) => {
+export default (req, store) => {
   // The problem is: Node environment does not know anything about JSX.
   // So if we try to execute index.js without additional setup,
   // we will get: SyntaxError: Unexpected token '<'
@@ -11,9 +12,11 @@ export default (req) => {
     // StaticRouter cannot look at the address bar like BrowserRouter does,
     // so we need to pass the current path user is trying to visit via 'location' prop.
     // The path can be found on a 'req' object of Express route handler.
-    <StaticRouter location={req.path} context={{}}>
-      <Routes />
-    </StaticRouter>
+    <Provider store={store}>
+      <StaticRouter location={req.path} context={{}}>
+        <Routes />
+      </StaticRouter>
+    </Provider>
   );
 
   // We need to include ONLY the client side JS in the resulting HTML
