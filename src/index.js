@@ -1,3 +1,5 @@
+// This first import will polyfill the functions for 'async-await' functionality
+import 'babel-polyfill';
 import express from 'express';
 import renderHtml from './helpers/renderHtml';
 import createStore from './helpers/createStore';
