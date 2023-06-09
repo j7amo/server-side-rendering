@@ -26,8 +26,8 @@ const app = express();
 app.use(
   '/api',
   proxy('https://react-ssr-api.herokuapp.com/', {
-    // This particular setup is needed because the author of API set it up in some specific way.
-    // Usually we don't need this setup.
+    // This particular setup is needed because the author of API set it up in a specific way.
+    // The whole point of the setup is about redirecting to a correct URL after signing in with Google OAuth.
     proxyReqOptDecorator(opts) {
       opts.headers['x-forwarded-host'] = 'localhost:3000';
 
