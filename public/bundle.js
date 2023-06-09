@@ -25931,6 +25931,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
@@ -25945,16 +25947,15 @@ var _UsersListPage2 = _interopRequireDefault(_UsersListPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = [{
-  path: '/',
-  component: _HomePage2.default,
+exports.default = [_extends({
+  path: '/'
+}, _HomePage2.default, { // this will result in component: HomePage.component
   exact: true
-}, {
-  loadData: _UsersListPage.loadData,
-  path: '/users',
-  component: _UsersListPage2.default,
+}), _extends({
+  path: '/users'
+}, _UsersListPage2.default, { // this will result in 1) component: UsersListPage.component 2) loadData: loadData
   exact: true
-}];
+})];
 
 /***/ }),
 /* 80 */
@@ -39734,7 +39735,8 @@ var HomePage = function HomePage() {
   );
 };
 
-exports.default = HomePage;
+// We wrap the component inside an object for simplifying its usage later on (in the Routes)
+exports.default = { component: HomePage };
 
 /***/ }),
 /* 486 */,
@@ -39749,8 +39751,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.loadData = loadData;
 
 var _react = __webpack_require__(3);
 
@@ -39828,8 +39828,12 @@ function loadData(store) {
   return store.dispatch((0, _actions.fetchUsers)());
 }
 
-// As a result UsersListPage component will have 'users' and 'fetchUsers' both available in the props object
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchUsers: _actions.fetchUsers })(UsersListPage);
+// We wrap the component AND 'loadData' inside an object for simplifying its usage later on (in the Routes)
+exports.default = {
+  // As a result UsersListPage component will have 'users' and 'fetchUsers' both available in the props object
+  component: (0, _reactRedux.connect)(mapStateToProps, { fetchUsers: _actions.fetchUsers })(UsersListPage),
+  loadData: loadData
+};
 
 /***/ })
 /******/ ]);

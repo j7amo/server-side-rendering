@@ -28,7 +28,7 @@ function mapStateToProps(state) {
   };
 }
 
-export function loadData(store) {
+function loadData(store) {
   // Why do we use 'store.dispatch'? Why not use 'component.props.fetchUsers'?
   // Because 'connect' function works only with 'Provider' component.
   // For it to work the Provider component MUST BE RENDERED FIRST!
@@ -37,5 +37,9 @@ export function loadData(store) {
   return store.dispatch(fetchUsers());
 }
 
-// As a result UsersListPage component will have 'users' and 'fetchUsers' both available in the props object
-export default connect(mapStateToProps, { fetchUsers })(UsersListPage);
+// We wrap the component AND 'loadData' inside an object for simplifying its usage later on (in the Routes)
+export default {
+  // As a result UsersListPage component will have 'users' and 'fetchUsers' both available in the props object
+  component: connect(mapStateToProps, { fetchUsers })(UsersListPage),
+  loadData,
+};

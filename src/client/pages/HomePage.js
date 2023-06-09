@@ -9,4 +9,5 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+// We wrap the component inside an object for simplifying its usage later on (in the Routes)
+export default { component: HomePage };
