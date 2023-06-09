@@ -3,6 +3,7 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import Routes from '../client/Routes';
 import { Provider } from 'react-redux';
+import { renderRoutes } from 'react-router-config';
 
 export default (req, store) => {
   // The problem is: Node environment does not know anything about JSX.
@@ -14,7 +15,7 @@ export default (req, store) => {
     // The path can be found on a 'req' object of Express route handler.
     <Provider store={store}>
       <StaticRouter location={req.path} context={{}}>
-        <Routes />
+        <div>{renderRoutes(Routes)}</div>
       </StaticRouter>
     </Provider>
   );

@@ -21,19 +21,14 @@ app.get('*', (req, res) => {
   // We need it to behave differently - NOT like the Redux store in the browser.
   // The usual behavior of the React-Redux app in the browser in the context of
   // fetching some data:
-  // 1) dispatch an action
-  // 2) call API
+  // 1) dispatch an action from a lifecycle method/useEffect hook
+  // 2) call API from thunk
   // 3) resolve API call and receive data
   // 4) call the reducer and get the updated state
-  // 5) update the React layer
-  // But we DON'T update React layer on the server side. It is static! We don't mount components!
-  // We just get the resulting HTML which is a static string.
-  // On the client side in the browser it all happens naturally!
-  // We don't know the exact moment when the data from the API is received
-  // OR when the state inside Redux store is updated. We don't get any signals about these things.
-  // But on the server we NEED TO KNOW THE EXACT MOMENT the data is received and AS SOON AS THE DATA IS RECEIVED
-  // we must attempt to generate HTML and send it to the browser as quick as possible! Because this
-  // is basically the whole point of SSR - user should get the content blazing fast!
+  // 5) update the React layer via connect function/useSelector hook
+  // BUT:
+  // 'componentDidMount' lifecycle method is NOT invoked when we call 'renderToString' function!
+  // So we end up with no data and cannot show it to the user as a result.
 
   // We are creating a Redux store here, initialize and add data to it
   // and finally pass it to 'renderHtml' function.
