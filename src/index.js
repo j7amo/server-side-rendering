@@ -3,6 +3,8 @@ import 'babel-polyfill';
 import express from 'express';
 import renderHtml from './helpers/renderHtml';
 import createStore from './helpers/createStore';
+import { matchRoutes } from 'react-router-config';
+import Routes from './client/Routes';
 
 const app = express();
 
@@ -16,7 +18,7 @@ app.use(express.static('public'));
 // Express will behave exactly the same:
 // it will send back the result of calling 'renderHtml' function that WILL really handle
 // routing because it uses StaticRouter under the hood.
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
   // This might look strange but Redux store on the server MUST be set up differently!
   // We need it to behave differently - NOT like the Redux store in the browser.
   // The usual behavior of the React-Redux app in the browser in the context of
@@ -34,8 +36,27 @@ app.get('*', (req, res) => {
   // and finally pass it to 'renderHtml' function.
   const store = createStore();
 
-  // Here we only send resulting HTML back to the client
-  // NO JS! We need to fix it!
+  // Before we pass the store to 'renderHtml' function we need it to contain all the data (i.e. everything
+  // should be fetched). To understand what exactly we should fetch we first need to somehow know what
+  // set of components we will render.
+  // 'matchRoutes' function can help us with that.
+  // It checks if some route is matched based on the user request
+  // and returns the array of components to be rendered.
+  // So by now we know exact components to be rendered WITHOUT rendering them (remember that we want
+  // to 1) fetch all the needed data 2) render the app ONLY once 3) return the string to the client).
+  const pendingRequests = matchRoutes(Routes, req.path).map((matchedRoute) => {
+    if (matchedRoute.route.loadData) {
+      return matchedRoute.route.loadData(store);
+    }
+  });
+
+  // 'pendingRequests' is an array of promises because 'loadData' function returns a promise.
+  // To make sure that we
+  // 1) fetch all the data and
+  // 2) update store with this data before rendering - we await 'Promise.all'
+  await Promise.all(pendingRequests);
+
+  // And now we have everything we need to create markup and send it to the client
   res.send(renderHtml(req, store));
 });
 

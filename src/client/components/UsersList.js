@@ -28,5 +28,14 @@ function mapStateToProps(state) {
   };
 }
 
+export function loadData(store) {
+  // Why do we use 'store.dispatch'? Why not use 'component.props.fetchUsers'?
+  // Because 'connect' function works only with 'Provider' component.
+  // For it to work the Provider component MUST BE RENDERED FIRST!
+  // But we want to fetch all the data and update Redux store BEFORE RENDERING anything!
+  // So we CANNOT USE CONNECT functionality here.
+  return store.dispatch(fetchUsers());
+}
+
 // As a result UsersList component will have 'users' and 'fetchUsers' both available in the props object
 export default connect(mapStateToProps, { fetchUsers })(UsersList);
