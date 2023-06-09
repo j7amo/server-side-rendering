@@ -10,11 +10,20 @@ import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import Routes from './Routes';
 import reducers from './reducers';
+import axios from 'axios';
+
+// We create a separate Axios instance to distinguish between client and server side requests
+// because the URLs are different BUT at the same time we have to call THE SAME ACTION CREATOR
+// for both of those requests.
+const axiosInstance = axios.create({
+  baseURL: '/api',
+});
 
 const store = createStore(
   reducers,
   window.INITIAL_STATE,
-  applyMiddleware(thunk)
+  // Make Redux thunk accept 3rd arbitrary argument (besides 'dispatch' and 'getState')
+  applyMiddleware(thunk.withExtraArgument(axiosInstance))
 );
 // Here we use a special 'hydrate' method of ReactDOM to work with SSR markup in the browser.
 // This process of adding JS interactivity back to the static markup (which is more of a preview before this step)

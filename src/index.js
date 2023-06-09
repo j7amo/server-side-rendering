@@ -26,8 +26,10 @@ const app = express();
 app.use(
   '/api',
   proxy('https://react-ssr-api.herokuapp.com/', {
+    // This particular setup is needed because the author of API set it up in some specific way.
+    // Usually we don't need this setup.
     proxyReqOptDecorator(opts) {
-      opts.header['x-forward-host'] = 'localhost:3000';
+      opts.headers['x-forwarded-host'] = 'localhost:3000';
 
       return opts;
     },
@@ -59,7 +61,7 @@ app.get('*', async (req, res) => {
 
   // We are creating a Redux store here, initialize and add data to it
   // and finally pass it to 'renderHtml' function.
-  const store = createStore();
+  const store = createStore(req);
 
   // Before we pass the store to 'renderHtml' function we need it to contain all the data (i.e. everything
   // should be fetched). To understand what exactly we should fetch we first need to somehow know what
