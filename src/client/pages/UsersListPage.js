@@ -5,6 +5,12 @@ import { fetchUsers } from '../actions';
 // Because this course is using old React 16.0, we have to work with class components.
 class UsersListPage extends Component {
   componentDidMount() {
+    // It might look like we can now remove this call because we are getting the initial state
+    // for Redux store from the server where we already have users.
+    // BUT! Let's imagine the user of our app decides to go to '/' path first, and
+    // later he decides to visit '/users'. Because of this order data for 'UsersListPage'
+    // WAS NEVER FETCHED ON THE SERVER! So that window.INITIAL_STATE does not have it anymore.
+    // That's why we have to keep this call here.
     this.props.fetchUsers();
   }
 

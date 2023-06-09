@@ -1059,7 +1059,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Startup point for the client side application
 // This first import will polyfill the functions for 'async-await' functionality
-var store = (0, _redux.createStore)(_reducers2.default, {}, (0, _redux.applyMiddleware)(_reduxThunk2.default));
+var store = (0, _redux.createStore)(_reducers2.default, window.INITIAL_STATE, (0, _redux.applyMiddleware)(_reduxThunk2.default));
 // Here we use a special 'hydrate' method of ReactDOM to work with SSR markup in the browser.
 // This process of adding JS interactivity back to the static markup (which is more of a preview before this step)
 // and re-rendering it afterward is called HYDRATION.
@@ -39781,6 +39781,12 @@ var UsersListPage = function (_Component) {
   _createClass(UsersListPage, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      // It might look like we can now remove this call because we are getting the initial state
+      // for Redux store from the server where we already have users.
+      // BUT! Let's imagine the user of our app decides to go to '/' path first, and
+      // later he decides to visit '/users'. Because of this order data for 'UsersListPage'
+      // WAS NEVER FETCHED ON THE SERVER! So that window.INITIAL_STATE does not have it anymore.
+      // That's why we have to keep this call here.
       this.props.fetchUsers();
     }
   }, {
