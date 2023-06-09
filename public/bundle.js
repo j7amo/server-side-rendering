@@ -8700,6 +8700,7 @@ Object.defineProperty(exports, "__esModule", {
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var FETCH_USERS = exports.FETCH_USERS = 'fetch_users';
+var FETCH_CURRENT_USER = exports.FETCH_CURRENT_USER = 'fetch_current_user';
 // After configuring Redux thunk to receive Axios instance as a 3rd argument(here we use by the name of 'api')
 // we now can use it inside the middleware:
 var fetchUsers = exports.fetchUsers = function fetchUsers() {
@@ -8732,6 +8733,41 @@ var fetchUsers = exports.fetchUsers = function fetchUsers() {
 
     return function (_x, _x2, _x3) {
       return _ref.apply(this, arguments);
+    };
+  }();
+};
+
+// Here we catch current user authentication status
+var fetchCurrentUser = exports.fetchCurrentUser = function fetchCurrentUser() {
+  return function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(dispatch, getState, api) {
+      var res;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return api.get('/current_user');
+
+            case 2:
+              res = _context2.sent;
+
+
+              dispatch({
+                type: FETCH_CURRENT_USER,
+                payload: res
+              });
+
+            case 4:
+            case 'end':
+              return _context2.stop();
+          }
+        }
+      }, _callee2, undefined);
+    }));
+
+    return function (_x4, _x5, _x6) {
+      return _ref2.apply(this, arguments);
     };
   }();
 };
@@ -38767,16 +38803,25 @@ var _UsersListPage = __webpack_require__(463);
 
 var _UsersListPage2 = _interopRequireDefault(_UsersListPage);
 
+var _App = __webpack_require__(485);
+
+var _App2 = _interopRequireDefault(_App);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = [_extends({
-  path: '/'
-}, _HomePage2.default, { // this will result in component: HomePage.component
-  exact: true
-}), _extends({
-  path: '/users'
-}, _UsersListPage2.default, { // this will result in 1) component: UsersListPage.component 2) loadData: loadData
-  exact: true
+// The App component will always be rendered and other routes will be nested inside of it.
+// Notice how the App part does not have a 'path' and 'exact' properties because
+// we do not want to associate it with any but to show 100% of the time.
+exports.default = [_extends({}, _App2.default, {
+  routes: [_extends({
+    path: '/'
+  }, _HomePage2.default, { // this will result in component: HomePage.component
+    exact: true
+  }), _extends({
+    path: '/users'
+  }, _UsersListPage2.default, { // this will result in 1) component: UsersListPage.component 2) loadData: loadData
+    exact: true
+  })]
 })];
 
 /***/ }),
@@ -38937,9 +38982,14 @@ var _usersReducer = __webpack_require__(465);
 
 var _usersReducer2 = _interopRequireDefault(_usersReducer);
 
+var _authReducer = __webpack_require__(487);
+
+var _authReducer2 = _interopRequireDefault(_authReducer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var reducers = (0, _redux.combineReducers)({
+  auth: _authReducer2.default,
   users: _usersReducer2.default
 });
 
@@ -39845,6 +39895,104 @@ module.exports = function spread(callback) {
   };
 };
 
+
+/***/ }),
+/* 485 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(8);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterConfig = __webpack_require__(455);
+
+var _Header = __webpack_require__(486);
+
+var _Header2 = _interopRequireDefault(_Header);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Because we have nested routes that we want to render inside an App component
+// we need to use a special 'route' prop that has 'routes' property on it.
+var App = function App(_ref) {
+  var route = _ref.route;
+
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(_Header2.default, null),
+    (0, _reactRouterConfig.renderRoutes)(route.routes)
+  );
+};
+
+exports.default = { component: App };
+
+/***/ }),
+/* 486 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(8);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(407);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Header = function Header() {
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      _reactRouterDom.Link,
+      { to: '/' },
+      'React SSR'
+    )
+  );
+};
+
+exports.default = Header;
+
+/***/ }),
+/* 487 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _actions = __webpack_require__(181);
+
+var authReducer = function authReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.FETCH_CURRENT_USER:
+      return action.payload.data || false;
+    default:
+      return state;
+  }
+};
+
+exports.default = authReducer;
 
 /***/ })
 /******/ ]);
