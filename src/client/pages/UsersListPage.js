@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { fetchUsers } from '../actions';
 
 // Because this course is using old React 16.0, we have to work with class components.
-class UsersList extends Component {
+class UsersListPage extends Component {
   componentDidMount() {
     this.props.fetchUsers();
   }
@@ -37,5 +37,5 @@ export function loadData(store) {
   return store.dispatch(fetchUsers());
 }
 
-// As a result UsersList component will have 'users' and 'fetchUsers' both available in the props object
-export default connect(mapStateToProps, { fetchUsers })(UsersList);
+// As a result UsersListPage component will have 'users' and 'fetchUsers' both available in the props object
+export default connect(mapStateToProps, { fetchUsers })(UsersListPage);
