@@ -39917,6 +39917,8 @@ var _Header = __webpack_require__(486);
 
 var _Header2 = _interopRequireDefault(_Header);
 
+var _actions = __webpack_require__(181);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Because we have nested routes that we want to render inside an App component
@@ -39932,7 +39934,16 @@ var App = function App(_ref) {
   );
 };
 
-exports.default = { component: App };
+exports.default = {
+  component: App,
+  // Add 'loadData' property (just like we did with other components that need data fetching).
+  // Why do we add fetching of current user auth status to the App component?
+  // Because we want to always check it and the App component is rendered 100% of the time.
+  loadData: function loadData(_ref2) {
+    var dispatch = _ref2.dispatch;
+    return dispatch((0, _actions.fetchCurrentUser)());
+  }
+};
 
 /***/ }),
 /* 486 */
@@ -39951,9 +39962,26 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(407);
 
+var _reactRedux = __webpack_require__(176);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Header = function Header() {
+var Header = function Header(_ref) {
+  var auth = _ref.auth;
+
+  console.log('auth');
+  // Here we use <a> tags because we want the browser to make a full request with cookies in each of these cases.
+  // The <Link /> component is no good for this because it won't trigger browser request.
+  var authButton = auth ? _react2.default.createElement(
+    'a',
+    { href: '/api/logout' },
+    'Logout'
+  ) : _react2.default.createElement(
+    'a',
+    { href: '/api/auth/google' },
+    'Login'
+  );
+
   return _react2.default.createElement(
     'div',
     null,
@@ -39961,11 +39989,32 @@ var Header = function Header() {
       _reactRouterDom.Link,
       { to: '/' },
       'React SSR'
+    ),
+    _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        _reactRouterDom.Link,
+        { to: '/' },
+        'Users'
+      ),
+      _react2.default.createElement(
+        _reactRouterDom.Link,
+        { to: '/' },
+        'Admins'
+      ),
+      authButton
     )
   );
 };
 
-exports.default = Header;
+function mapStateToProps(_ref2) {
+  var auth = _ref2.auth;
+
+  return { auth: auth };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(Header);
 
 /***/ }),
 /* 487 */
