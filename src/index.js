@@ -4,10 +4,35 @@ import express from 'express';
 import renderHtml from './helpers/renderHtml';
 import createStore from './helpers/createStore';
 import { matchRoutes } from 'react-router-config';
+import proxy from 'express-http-proxy';
+
 import Routes from './client/Routes';
 
 const app = express();
+// We are using cookie-based authentication in our app (because JWT solution is far from ideal - we cannot attach
+// JWT on the first request BUT we already are expecting to see the page after this very first request).
+// With cookie-based auth solution we don't have control over sending cookies BUT the browser
+// will send them automatically for us if they MATCH DOMAIN THAT ISSUED THEM ORIGINALLY.
+// To make this matching happen we have to set up a proxy that
+// will redirect initial request from the browser to the API so that browser can successfully send the cookie.
+// So we basically 'trick' the browser into thinking that it is sending cookies
+// to the API when in reality it communicates with the rendering server!
+// Then on the rendering server we
+// 1) intercept and extract the cookie from the request
+// 2) attach cookie to axios request to the API
+// 3) API sees the cookie, recognizes us and gives us the data we need
+// 4) we use this data for SSR of the pages that require authentication
+// 5) we send back complete HTML with all the needed data
+app.use(
+  '/api',
+  proxy('https://react-ssr-api.herokuapp.com/', {
+    proxyReqOptDecorator(opts) {
+      opts.header['x-forward-host'] = 'localhost:3000';
 
+      return opts;
+    },
+  })
+);
 // We use 'express.static' middleware to serve images, CSS files
 // and JavaScript files in a directory named 'public'. And this is exactly what we need
 // because 'bundle.js' file with all the clientside JS code is located in this folder.
