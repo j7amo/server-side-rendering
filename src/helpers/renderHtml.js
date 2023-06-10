@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import serialize from 'serialize-javascript';
 
-export default (req, store) => {
+export default (req, store, context) => {
   // The problem is: Node environment does not know anything about JSX.
   // So if we try to execute index.js without additional setup,
   // we will get: SyntaxError: Unexpected token '<'
@@ -15,7 +15,7 @@ export default (req, store) => {
     // so we need to pass the current path user is trying to visit via 'location' prop.
     // The path can be found on a 'req' object of Express route handler.
     <Provider store={store}>
-      <StaticRouter location={req.path} context={{}}>
+      <StaticRouter location={req.path} context={context}>
         <div>{renderRoutes(Routes)}</div>
       </StaticRouter>
     </Provider>

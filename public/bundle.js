@@ -38807,6 +38807,10 @@ var _App = __webpack_require__(485);
 
 var _App2 = _interopRequireDefault(_App);
 
+var _NotFoundPage = __webpack_require__(488);
+
+var _NotFoundPage2 = _interopRequireDefault(_NotFoundPage);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // The App component will always be rendered and other routes will be nested inside of it.
@@ -38821,7 +38825,7 @@ exports.default = [_extends({}, _App2.default, {
     path: '/users'
   }, _UsersListPage2.default, { // this will result in 1) component: UsersListPage.component 2) loadData: loadData
     exact: true
-  })]
+  }), _extends({}, _NotFoundPage2.default)]
 })];
 
 /***/ }),
@@ -40055,6 +40059,42 @@ var authReducer = function authReducer() {
 };
 
 exports.default = authReducer;
+
+/***/ }),
+/* 488 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(8);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// We receive 'staticContext' prop on the server side inside the StaticRouter.
+// But on the client side we use BrowserRouter and in that case
+// we do not receive 'staticContext' prop. So we need to default it.
+var NotFoundPage = function NotFoundPage(_ref) {
+  var _ref$staticContext = _ref.staticContext,
+      staticContext = _ref$staticContext === undefined ? {} : _ref$staticContext;
+
+  // Add error prop for later inspection before sending the response.
+  staticContext.notFound = true;
+
+  return _react2.default.createElement(
+    'h1',
+    null,
+    'Page not found!'
+  );
+};
+
+exports.default = { component: NotFoundPage };
 
 /***/ })
 /******/ ]);

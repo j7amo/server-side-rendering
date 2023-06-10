@@ -83,8 +83,24 @@ app.get('*', async (req, res) => {
   // 2) update store with this data before rendering - we await 'Promise.all'
   await Promise.all(pendingRequests);
 
+  // Here we define an object that will be used by StaticRouter.
+  // StaticRouter will pass this object to any component it renders.
+  // So the idea is the following:
+  // 1) pass 'context' to StaticRouter
+  // 2) StaticRouter passes it to NotFoundPage
+  // 3) inside NotFoundPage component add an error property to the context object
+  // 4) after HTML markup was created AND before sending it back to the client
+  // CHECK context object for error property and send 404 Not Found status if error is present.
+  const context = {};
+
   // And now we have everything we need to create markup and send it to the client
-  res.send(renderHtml(req, store));
+  const html = renderHtml(req, store, context);
+
+  if (context.notFound) {
+    res.status(404).send(html);
+  } else {
+    res.send(html);
+  }
 });
 
 app.listen(3000, () => console.log('Server is running on port 3000'));
