@@ -116,6 +116,10 @@ app.get('*', async (req, res) => {
     // And now we have everything we need to create markup and send it to the client
     const html = renderHtml(req, store, context);
 
+    if (context.url) {
+      return res.redirect(301, context.url);
+    }
+
     if (context.notFound) {
       res.status(404).send(html);
     } else {
