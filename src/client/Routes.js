@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage';
 import UsersListPage from './pages/UsersListPage';
 import App from './App';
 import NotFoundPage from './pages/NotFoundPage';
+import AdminsListPage from './pages/AdminsListPage';
 
 // The App component will always be rendered and other routes will be nested inside of it.
 // Notice how the App part does not have a 'path' and 'exact' properties because
@@ -19,6 +20,11 @@ export default [
       {
         path: '/users',
         ...UsersListPage, // this will result in 1) component: UsersListPage.component 2) loadData: loadData
+        exact: true,
+      },
+      {
+        path: '/admins',
+        ...AdminsListPage,
         exact: true,
       },
       {
