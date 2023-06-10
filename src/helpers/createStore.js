@@ -4,7 +4,7 @@ import reducers from '../client/reducers';
 import axios from 'axios';
 
 export default (req) => {
-  // Here we create another Axios instance but this time for the server side.
+  // Here we create another Axios instance but this time for the server-side-rendering side.
   // In this case we have to manually attach the cookie to the request because the request itself
   // is not carried by the browser this time, and we still want to trick the API
   // into thinking that this request comes from the browser.

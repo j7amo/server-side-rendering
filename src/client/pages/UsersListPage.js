@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUsers } from '../actions';
+import { Helmet } from 'react-helmet';
 
 // Because this course is using old React 16.0, we have to work with class components.
 class UsersListPage extends Component {
   componentDidMount() {
     // It might look like we can now remove this call because we are getting the initial state
-    // for Redux store from the server where we already have users.
+    // for Redux store from the server-side-rendering where we already have users.
     // BUT! Let's imagine the user of our app decides to go to '/' path first, and
     // later he decides to visit '/users'. Because of this order data for 'UsersListPage'
     // WAS NEVER FETCHED ON THE SERVER! So that window.INITIAL_STATE does not have it anymore.
@@ -18,9 +19,19 @@ class UsersListPage extends Component {
     return this.props.users.map((user) => <li key={user.id}>{user.name}</li>);
   }
 
+  head() {
+    return (
+      <Helmet>
+        <title>{`${this.props.users.length} Users loaded`}</title>
+        <meta property="og:title" content="Users App" />
+      </Helmet>
+    );
+  }
+
   render() {
     return (
       <div>
+        {this.head()}
         List of users
         <ul>{this.renderUsers()}</ul>
       </div>

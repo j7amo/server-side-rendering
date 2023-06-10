@@ -1,6 +1,6 @@
 import React from 'react';
 
-// We receive 'staticContext' prop on the server side inside the StaticRouter.
+// We receive 'staticContext' prop on the server-side-rendering side inside the StaticRouter.
 // But on the client side we use BrowserRouter and in that case
 // we do not receive 'staticContext' prop. So we need to default it.
 const NotFoundPage = ({ staticContext = {} }) => {

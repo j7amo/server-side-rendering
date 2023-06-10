@@ -5,6 +5,7 @@ import Routes from '../client/Routes';
 import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import serialize from 'serialize-javascript';
+import { Helmet } from 'react-helmet';
 
 export default (req, store, context) => {
   // The problem is: Node environment does not know anything about JSX.
@@ -26,9 +27,9 @@ export default (req, store, context) => {
   // 2) We also need to somehow PASS the already initialized Redux STATE TO the BROWSER.
   // Why? Because browser will initialize its own Redux store which will start completely EMPTY ->
   // this will trigger the fetching of data again -> this will result in the screen flashing
-  // because data fetched on the server will be overwritten with blank data(it will trigger re-render)
+  // because data fetched on the server-side-rendering will be overwritten with blank data(it will trigger re-render)
   // and then the blank data will be overwritten with newly fetched data again(it will trigger re-render again).
-  // But we don't want this behavior because the data was already fetched on the server before rendering
+  // But we don't want this behavior because the data was already fetched on the server-side-rendering before rendering
   // and sending back the markup.
   // 3) We also need to be very careful with XSS attacks. Why? React has XSS attacks defense built-in.
   // But the problem here is that we inject JS into a global variable on the 'window' object.
@@ -37,10 +38,13 @@ export default (req, store, context) => {
   // package. What it does: it does the coding of all the special characters (e.g. </\>) into Unicode.
   // When the browser sees something like '\u003C' (which is '<'), it DOES NOT TRY TO EXECUTE IT. It
   // just uses this information only for rendering purposes. So '\u003C' will be rendered as '<' but no execution!
+  const helmet = Helmet.renderStatic();
+
   return `
-    <html lang='en'>
+    <html lang='en'> 
       <head>
-        <title>Some SSR page</title>
+        ${helmet.title.toString()}
+        ${helmet.meta.toString()}
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'>
       </head>
       <body>

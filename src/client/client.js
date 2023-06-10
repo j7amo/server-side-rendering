@@ -12,7 +12,7 @@ import Routes from './Routes';
 import reducers from './reducers';
 import axios from 'axios';
 
-// We create a separate Axios instance to distinguish between client and server side requests
+// We create a separate Axios instance to distinguish between client and server-side-rendering side requests
 // because the URLs are different BUT at the same time we have to call THE SAME ACTION CREATOR
 // for both of those requests.
 const axiosInstance = axios.create({

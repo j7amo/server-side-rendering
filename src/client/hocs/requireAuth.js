@@ -8,7 +8,7 @@ export default (ChildComponent) => {
     render() {
       switch (this.props.auth) {
         case false:
-          // On the server side <Redirect /> component works differently. When we use it
+          // On the server-side-rendering side <Redirect /> component works differently. When we use it
           // StaticRouter adds something to the 'context' object. So we need to inspect that object.
           return <Redirect to="/" />;
         case null:

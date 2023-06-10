@@ -16,8 +16,8 @@ const app = express();
 // To make this matching happen we have to set up a proxy that
 // will redirect initial request from the browser to the API so that browser can successfully send the cookie.
 // So we basically 'trick' the browser into thinking that it is sending cookies
-// to the API when in reality it communicates with the rendering server!
-// Then on the rendering server we
+// to the API when in reality it communicates with the rendering server-side-rendering!
+// Then on the rendering server-side-rendering we
 // 1) intercept and extract the cookie from the request
 // 2) attach cookie to axios request to the API
 // 3) API sees the cookie, recognizes us and gives us the data we need
@@ -46,7 +46,7 @@ app.use(express.static('public'));
 // it will send back the result of calling 'renderHtml' function that WILL really handle
 // routing because it uses StaticRouter under the hood.
 app.get('*', async (req, res) => {
-  // This might look strange but Redux store on the server MUST be set up differently!
+  // This might look strange but Redux store on the server-side-rendering MUST be set up differently!
   // We need it to behave differently - NOT like the Redux store in the browser.
   // The usual behavior of the React-Redux app in the browser in the context of
   // fetching some data:
